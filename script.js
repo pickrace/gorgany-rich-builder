@@ -14,9 +14,13 @@ function buildImgCols() {
   c.innerHTML = '';
   for (let i = 1; i <= 3; i++) {
     const d = document.createElement('div');
-    d.className = 'img-card';
+    d.className = 'img-card';    
+    
+    // генерація полів для трьох зображень. 
+    // Треба переробити, щоб робило лінку за допомогою SKU + назва фото
+   
     d.innerHTML = `
-      <div class="img-card-title">Зображення ${i}</div>
+      <div class="img-card-title">Зображення ${i}</div>   
       <div class="field">
         <label>URL <span class="req">*</span></label>
         <input type="text" id="i${i}url" placeholder="https://www.gorgany.com/media/photo.jpeg">
