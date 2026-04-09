@@ -16,14 +16,15 @@ function buildImgCols() {
     const d = document.createElement('div');
     d.className = 'img-card';    
     
-    // генерація полів для трьох зображень. 
-    // Треба переробити, щоб робило лінку за допомогою SKU + назва фото
-   
     d.innerHTML = `
-      <div class="img-card-title">Зображення ${i}</div>   
+      <div class="img-card-title">Зображення ${i}</div>
       <div class="field">
-        <label>URL <span class="req">*</span></label>
-        <input type="text" id="i${i}url" placeholder="https://www.gorgany.com/media/photo.jpeg">
+        <label>Папка з фото в S3 <span class="req">*</span></label>
+        <input type="text" id="i${i}folder" placeholder="назва-папки">
+      </div>
+      <div class="field">
+        <label>Назва фото <span class="req">*</span></label>
+        <input type="text" id="i${i}name" placeholder="назва-фото">
       </div>
       <div class="field">
         <label>Alt-текст <span class="req">*</span></label>
@@ -81,10 +82,17 @@ function esc(s) {
 
 function generate() {
   // Section 1 — три зображення
+  const isGradient = document.getElementById('gradientToggle').checked;
   let s1 = '<div class="rich-content-three-images">\n';
   for (let i = 1; i <= 3; i++) {
+    const folder = g(`i${i}folder`).trim();
+    const name = g(`i${i}name`).trim();
+    const suffix = isGradient ? '_gradient' : '';
+    const imgUrl = (folder && name)
+      ? `https://www.gorgany.com/media/wysiwyg/rich-content/${folder}/${name}${suffix}.jpg?format=webp`
+      : '';
     s1 += `    <div class="col">\n`;
-    s1 += `        <img src="${webp(g(`i${i}url`))}" alt="${esc(g(`i${i}alt`))}">\n`;
+    s1 += `        <img src="${imgUrl}" alt="${esc(g(`i${i}alt`))}">\n`;
     s1 += `        <div>\n`;
     s1 += `            <span>${esc(g(`i${i}span`))}</span>\n`;
     s1 += `            <p>${esc(g(`i${i}p`))}</p>\n`;
@@ -94,10 +102,15 @@ function generate() {
   s1 += '</div>';
 
   // Section 2 — одне зображення
+  const s2folder = g('s2folder').trim();
+  const s2name = g('s2name').trim();
+  const s2imgUrl = (s2folder && s2name)
+    ? `https://www.gorgany.com/media/wysiwyg/rich-content/${s2folder}/${s2name}.jpg?format=webp`
+    : '';
   const s2 =
     `<div class="rich-content-one-image">\n` +
     `    <div>\n` +
-    `        <img src="${webp(g('s2url'))}" alt="${esc(g('s2alt'))}">\n` +
+    `        <img src="${s2imgUrl}" alt="${esc(g('s2alt'))}">\n` +
     `    </div>\n` +
     `</div>`;
 
@@ -113,6 +126,9 @@ function generate() {
   const feaT = esc(g('featTitle')), feaTx = esc(g('featText'));
   const tecT = esc(g('techTitle')), tecTx = esc(g('techText'));
   const tecP = tecTx ? `\n                    <p>${tecTx}</p>` : '';
+  const madeInUkraine = document.getElementById('madeInUkraineToggle').checked
+    ? `\n        <div class="made-in-ukraine">\n            <span>Зроблено з любов'ю в Україні</span>\n        </div>`
+    : '';
 
   const s3 =
     `<div class="rich-content-description-characteristics">
@@ -165,10 +181,7 @@ function generate() {
                 <div class="content" data-role="content">${tecP}
                 </div>
             </div>
-        </div>
-        <div class="made-in-ukraine">
-            <span>Зроблено з любов'ю в Україні</span>
-        </div>
+        </div>${madeInUkraine}
     </div>
 </div>`;
 

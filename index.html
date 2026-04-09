@@ -40,8 +40,13 @@
           <span class="section-chevron">›</span>
         </div>
         <div class="section-body">
-          <div class="tip"><b>Формат:</b> квадратні зображення · <b>URL:</b> абсолютний · <b>?format=webp</b> додається
-            автоматично</div>
+          <div class="tip"><b>Формат:</b> квадратні зображення · <b>Базовий URL:</b> gorgany.com/media/wysiwyg/rich-content/ · <b>?format=webp</b> додається автоматично</div>
+          <div class="toggle-row">
+            <label class="toggle-label">
+              <input type="checkbox" id="gradientToggle">
+              <span>Чи є градієнт на фото?</span>
+            </label>
+          </div>
           <div class="grid-3" id="imgCols"></div>
         </div>
       </div>
@@ -54,11 +59,14 @@
           <span class="section-chevron">›</span>
         </div>
         <div class="section-body">
-          <div class="tip"><b>Формат:</b> 1200px х 500px · <b>URL:</b> абсолютний · <b>?format=webp</b> додається
-            автоматично</div>
+          <div class="tip"><b>Формат:</b> 1200px х 500px · <b>Базовий URL:</b> gorgany.com/media/wysiwyg/rich-content/ · <b>?format=webp</b> додається автоматично</div>
           <div class="field">
-            <label>URL зображення <span class="req">*</span></label>
-            <input type="text" id="s2url" placeholder="https://www.gorgany.com/media/photo.jpg">
+            <label>Папка з фото в S3 <span class="req">*</span></label>
+            <input type="text" id="s2folder" placeholder="назва-папки">
+          </div>
+          <div class="field">
+            <label>Назва фото <span class="req">*</span></label>
+            <input type="text" id="s2name" placeholder="назва-фото">
           </div>
           <div class="field">
             <label>Alt-текст <span class="req">*</span></label>
@@ -165,6 +173,13 @@
                 <label>Текст під заголовком <span class="hint">(необов'язково)</span></label>
                 <textarea id="techText" rows="2"
                   placeholder="Таблиця характеристик підтягнеться автоматично"></textarea>
+              </div>
+
+              <div class="toggle-row">
+                <label class="toggle-label">
+                  <input type="checkbox" id="madeInUkraineToggle" checked>
+                  <span>Показувати «Зроблено з любов'ю в Україні»</span>
+                </label>
               </div>
             </div>
 
