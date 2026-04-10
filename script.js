@@ -19,14 +19,6 @@ function buildImgCols() {
     d.innerHTML = `
       <div class="img-card-title">Зображення ${i}</div>
       <div class="field">
-        <label>Папка з фото в S3 <span class="req">*</span></label>
-        <input type="text" id="i${i}folder" placeholder="назва-папки">
-      </div>
-      <div class="field">
-        <label>Назва фото <span class="req">*</span></label>
-        <input type="text" id="i${i}name" placeholder="назва-фото">
-      </div>
-      <div class="field">
         <label>Alt-текст <span class="req">*</span></label>
         <input type="text" id="i${i}alt" placeholder="SEO-текст для фото ${i}">
       </div>
@@ -83,13 +75,14 @@ function esc(s) {
 function generate() {
   // Section 1 — три зображення
   const isGradient = document.getElementById('gradientToggle').checked;
+  const sharedFolder = g('sharedFolder').trim();
+  const sharedName = g('sharedName').trim();
+  const posSuffixes = ['_left', '_middle', '_right'];
   let s1 = '<div class="rich-content-three-images">\n';
   for (let i = 1; i <= 3; i++) {
-    const folder = g(`i${i}folder`).trim();
-    const name = g(`i${i}name`).trim();
-    const suffix = isGradient ? '_gradient' : '';
-    const imgUrl = (folder && name)
-      ? `https://www.gorgany.com/media/wysiwyg/rich-content/${folder}/${name}${suffix}.jpg?format=webp`
+    const suffix = posSuffixes[i - 1] + (isGradient ? '_gradient' : '');
+    const imgUrl = (sharedFolder && sharedName)
+      ? `https://www.gorgany.com/media/wysiwyg/rich-content/${sharedFolder}/${sharedName}${suffix}.jpg?format=webp`
       : '';
     s1 += `    <div class="col">\n`;
     s1 += `        <img src="${imgUrl}" alt="${esc(g(`i${i}alt`))}">\n`;
@@ -102,10 +95,8 @@ function generate() {
   s1 += '</div>';
 
   // Section 2 — одне зображення
-  const s2folder = g('s2folder').trim();
-  const s2name = g('s2name').trim();
-  const s2imgUrl = (s2folder && s2name)
-    ? `https://www.gorgany.com/media/wysiwyg/rich-content/${s2folder}/${s2name}.jpg?format=webp`
+  const s2imgUrl = (sharedFolder && sharedName)
+    ? `https://www.gorgany.com/media/wysiwyg/rich-content/${sharedFolder}/${sharedName}_long.jpg?format=webp`
     : '';
   const s2 =
     `<div class="rich-content-one-image">\n` +
