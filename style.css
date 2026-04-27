@@ -422,6 +422,22 @@ textarea {
   font-weight: 500;
 }
 
+/* SUB TITLE ROW */
+.sub-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+}
+
+.sub-title-row .sub-title {
+  padding-bottom: 0;
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
 /* TOGGLE */
 .toggle-row {
   display: flex;

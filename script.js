@@ -114,21 +114,15 @@ function generate() {
   const tv2n = esc(g('tv2n')), tv2v = esc(g('tv2v'));
   const tv3n = esc(g('tv3n')), tv3v = esc(g('tv3v'));
   const purT = esc(g('purposeTitle')), purTx = esc(g('purposeText'));
-  const feaT = esc(g('featTitle')), feaTx = esc(g('featText'));
+  const feaT = esc(g('featTitle'));
+  const feaTxLines = g('featText').split('\n').filter(l => l.trim()).map(l => `                    <p>${esc(l.trim())}</p>`).join('\n');
   const tecT = esc(g('techTitle')), tecTx = esc(g('techText'));
   const tecP = tecTx ? `\n                    <p>${tecTx}</p>` : '';
   const madeInUkraine = document.getElementById('madeInUkraineToggle').checked
     ? `\n        <div class="made-in-ukraine">\n            <span>Зроблено з любов'ю в Україні</span>\n        </div>`
     : '';
-
-  const s3 =
-    `<div class="rich-content-description-characteristics">
-    <div class="col-left">
-        <div class="collapsible description">
-            <h3>${h3}</h3>
-            <p class="short-content">${short}<a class="more-link" data-role="title" href="javascript:void(0)">Читати більше</a></p>
-            <p class="long-content" data-role="content">${long}<a class="less-link" data-role="title" href="javascript:void(0)">Читати менше</a></p>
-        </div>
+  const threeValuesBlock = document.getElementById('threeValuesToggle').checked
+    ? `
         <div class="three-values">
             <h3>${tvT}</h3>
             <div class="values-wrappep">
@@ -145,7 +139,18 @@ function generate() {
                     <span>${tv3v}</span>
                 </div>
             </div>
+        </div>`
+    : '';
+
+  const s3 =
+    `<div class="rich-content-description-characteristics">
+    <div class="col-left">
+        <div class="collapsible description">
+            <h3>${h3}</h3>
+            <p class="short-content">${short}<a class="more-link" data-role="title" href="javascript:void(0)">Читати більше</a></p>
+            <p class="long-content" data-role="content">${long}<a class="less-link" data-role="title" href="javascript:void(0)">Читати менше</a></p>
         </div>
+        ${threeValuesBlock}
     </div>
     <div class="col-right">
         <div class="characteristics">
@@ -162,7 +167,7 @@ function generate() {
                     <span>${feaT}</span>
                 </div>
                 <div class="content" data-role="content">
-                    <p>${feaTx}</p>
+${feaTxLines}
                 </div>
             </div>
             <div class="collapsible technical-characteristics">
