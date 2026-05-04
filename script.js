@@ -2,6 +2,10 @@ function toggleSection(id) {
   document.getElementById(id).classList.toggle('collapsed');
 }
 
+function toggleOutput() {
+  document.getElementById('outputSection').classList.toggle('collapsed');
+}
+
 function cc(el, hintId, max) {
   const v = el.value.length;
   const h = document.getElementById(hintId);
@@ -186,6 +190,7 @@ ${feaTxLines}
   el.textContent = html;
   el.classList.remove('output-empty');
   el.closest('.output-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  saveGeneration(g('s3h3'), html);
 }
 
 function doCopy() {
@@ -204,5 +209,60 @@ function doCopy() {
   });
 }
 
+function saveGeneration(name, html) {
+  const history = JSON.parse(localStorage.getItem('richHistory') || '[]');
+  history.unshift({
+    name: name || `Генерація ${new Date().toLocaleTimeString('uk', { hour: '2-digit', minute: '2-digit' })}`,
+    html,
+    time: new Date().toLocaleTimeString('uk', { hour: '2-digit', minute: '2-digit' })
+  });
+  if (history.length > 5) history.length = 5;
+  localStorage.setItem('richHistory', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const history = JSON.parse(localStorage.getItem('richHistory') || '[]');
+  const section = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+  if (!history.length) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  list.innerHTML = history.map((e, i) => `
+    <div class="history-item">
+      <div class="history-item-info" onclick="loadHistoryItem(${i})" title="Завантажити у вивід">
+        <span class="history-item-name">${esc(e.name)}</span>
+        <span class="history-item-time">${e.time}</span>
+      </div>
+      <button class="copy-btn" id="hcopy${i}" onclick="copyHistoryItem(${i})">Копіювати</button>
+    </div>
+  `).join('');
+}
+
+function loadHistoryItem(i) {
+  const history = JSON.parse(localStorage.getItem('richHistory') || '[]');
+  if (!history[i]) return;
+  const el = document.getElementById('output');
+  el.textContent = history[i].html;
+  el.classList.remove('output-empty');
+  el.closest('.output-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyHistoryItem(i) {
+  const history = JSON.parse(localStorage.getItem('richHistory') || '[]');
+  if (!history[i]) return;
+  navigator.clipboard.writeText(history[i].html).then(() => {
+    const b = document.getElementById(`hcopy${i}`);
+    b.textContent = '✓ Скопійовано!';
+    b.classList.add('ok');
+    setTimeout(() => { b.textContent = 'Копіювати'; b.classList.remove('ok'); }, 2500);
+  });
+}
+
+function clearHistory() {
+  localStorage.removeItem('richHistory');
+  renderHistory();
+}
+
 // Ініціалізація
 buildImgCols();
+renderHistory();

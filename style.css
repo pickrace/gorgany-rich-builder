@@ -345,6 +345,27 @@ textarea {
   padding: 12px 20px;
   border-bottom: 1px solid var(--border);
   background: var(--surface2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.output-head:hover {
+  background: #eeede9;
+}
+
+.output-chevron {
+  font-size: 16px;
+  color: var(--text3);
+  transition: transform .2s;
+  margin-left: 4px;
+}
+
+.output-section.collapsed .output-chevron {
+  transform: rotate(-90deg);
+}
+
+.output-section.collapsed .output-pre {
+  display: none;
 }
 
 .output-title {
@@ -474,6 +495,65 @@ textarea {
 
 .tip b {
   color: var(--accent);
+}
+
+/* HISTORY */
+.history-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.history-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.history-item-info:hover .history-item-name {
+  color: var(--accent);
+}
+
+.history-item-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  transition: color .15s;
+}
+
+.history-item-time {
+  font-size: 11px;
+  color: var(--text3);
 }
 
 /* FOOTER */

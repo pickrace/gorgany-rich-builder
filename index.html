@@ -195,14 +195,24 @@
         </div>
       </div>
 
+      <!-- HISTORY -->
+      <div class="history-section" id="historySection" style="display:none">
+        <div class="history-head">
+          <span class="history-title">Останні генерації</span>
+          <button class="copy-btn" onclick="clearHistory()">Очистити</button>
+        </div>
+        <div id="historyList"></div>
+      </div>
+
       <!-- OUTPUT -->
-      <div class="output-section">
-        <div class="output-head">
+      <div class="output-section" id="outputSection">
+        <div class="output-head" onclick="toggleOutput()">
           <span class="output-title">Готовий HTML</span>
           <div class="spacer"></div>
           <span class="status-msg" id="statusMsg"></span>
-          <button class="copy-btn" id="copybtn" onclick="doCopy()">Копіювати</button>
-          <button class="gen-btn" onclick="generate()">Згенерувати →</button>
+          <button class="copy-btn" id="copybtn" onclick="event.stopPropagation(); doCopy()">Копіювати</button>
+          <button class="gen-btn" onclick="event.stopPropagation(); generate()">Згенерувати →</button>
+          <span class="output-chevron">›</span>
         </div>
         <pre class="output-pre output-empty" id="output">Заповни поля і натисни «Згенерувати →»</pre>
       </div>
