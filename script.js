@@ -1,3 +1,4 @@
+// Річ-контент
 function toggleSection(id) {
   document.getElementById(id).classList.toggle('collapsed');
 }
@@ -20,22 +21,31 @@ function buildImgCols() {
     const d = document.createElement('div');
     d.className = 'img-card';    
     
+    const defAlt = ['First photo', 'Second photo', 'Third photo'][i - 1];
     d.innerHTML = `
       <div class="img-card-title">Зображення ${i}</div>
       <div class="field">
         <label>Alt-текст <span class="req">*</span></label>
-        <input type="text" id="i${i}alt" placeholder="SEO-текст для фото ${i}">
+        <input type="text" id="i${i}alt" value="${defAlt}" placeholder="SEO-текст для фото ${i}">
+      </div>
+      <div class="field">
+        <label>Режим тексту <span class="hint">ліміти символів</span></label>
+        <div class="seg" id="i${i}seg">
+          <button type="button" class="seg-btn active" onclick="setMode(${i},'one',this)">1 рядок</button>
+          <button type="button" class="seg-btn" onclick="setMode(${i},'two',this)">2 рядки</button>
+          <button type="button" class="seg-btn" onclick="setMode(${i},'custom',this)">Кастом</button>
+        </div>
       </div>
       <div class="field">
         <div class="field-row">
-          <label>Заголовок <span class="hint">до 25 симв.</span></label>
+          <label>Заголовок <span class="hint" id="i${i}sh">до 25 симв.</span></label>
           <span class="char-count" id="i${i}sc">0/25</span>
         </div>
         <input type="text" id="i${i}span" placeholder="Весна / Літо / Осінь" oninput="chkSpan(${i},this)">
       </div>
       <div class="field">
         <div class="field-row">
-          <label>Підпис <span class="hint">до 126 симв.</span></label>
+          <label>Підпис <span class="hint" id="i${i}ph">до 126 симв.</span></label>
           <span class="char-count" id="i${i}pc">0/126</span>
         </div>
         <textarea id="i${i}p" rows="2" placeholder="Короткий підпис" oninput="chkP(${i},this)"></textarea>
@@ -44,18 +54,49 @@ function buildImgCols() {
   }
 }
 
+// Режими тексту
+const LINE_MODES = {
+  one:    { span: 25,   p: 126 },
+  two:    { span: 50,   p: 80 },
+  custom: { span: null, p: null }
+};
+const cellMode = { 1: 'one', 2: 'one', 3: 'one' };
+
+function setMode(i, mode, btn) {
+  cellMode[i] = mode;
+  document.querySelectorAll(`#i${i}seg .seg-btn`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const m = LINE_MODES[mode];
+  document.getElementById(`i${i}sh`).textContent = m.span ? `до ${m.span} симв.` : 'без ліміту';
+  document.getElementById(`i${i}ph`).textContent = m.p ? `до ${m.p} симв.` : 'без ліміту';
+  chkSpan(i, document.getElementById(`i${i}span`));
+  chkP(i, document.getElementById(`i${i}p`));
+}
+
 function chkSpan(i, el) {
   const v = el.value.length;
   const h = document.getElementById(`i${i}sc`);
-  h.textContent = v + '/25';
-  h.className = 'char-count' + (v > 50 ? ' err' : v > 25 ? ' warn' : '');
+  const max = LINE_MODES[cellMode[i]].span;
+  if (max === null) {
+    h.textContent = v + ' симв.';
+    h.className = 'char-count';
+    return;
+  }
+  h.textContent = v + '/' + max;
+  h.className = 'char-count' + (v > max ? ' err' : v > max * 0.85 ? ' warn' : '');
 }
 
 function chkP(i, el) {
   const v = el.value.length;
   const h = document.getElementById(`i${i}pc`);
-  h.textContent = v + '/126';
-  h.className = 'char-count' + (v > 126 ? ' err' : v > 110 ? ' warn' : '');
+  const max = LINE_MODES[cellMode[i]].p;
+  if (max === null) {
+    h.textContent = v + ' симв.';
+    h.className = 'char-count';
+    return;
+  }
+  h.textContent = v + '/' + max;
+  h.className = 'char-count' + (v > max ? ' err' : v > max * 0.85 ? ' warn' : '');
 }
 
 function g(id) {
@@ -86,7 +127,7 @@ function generate() {
   for (let i = 1; i <= 3; i++) {
     const suffix = posSuffixes[i - 1] + (isGradient ? '_gradient' : '');
     const imgUrl = (sharedFolder && sharedName)
-      ? `https://www.gorgany.com/media/wysiwyg/rich-content/${sharedFolder}/${sharedName}${suffix}.jpg?format=webp`
+      ? `https://www.gorgany.com/media/wysiwyg/all_rich/five_pack/${sharedFolder}/${sharedName}${suffix}.jpg?format=webp`
       : '';
     s1 += `    <div class="col">\n`;
     s1 += `        <img src="${imgUrl}" alt="${esc(g(`i${i}alt`))}">\n`;
@@ -100,7 +141,7 @@ function generate() {
 
   // Section 2 — одне зображення
   const s2imgUrl = (sharedFolder && sharedName)
-    ? `https://www.gorgany.com/media/wysiwyg/rich-content/${sharedFolder}/${sharedName}_long.jpg?format=webp`
+    ? `https://www.gorgany.com/media/wysiwyg/all_rich/five_pack/${sharedFolder}/${sharedName}_long.jpg?format=webp`
     : '';
   const s2 =
     `<div class="rich-content-one-image">\n` +
@@ -263,6 +304,15 @@ function clearHistory() {
   renderHistory();
 }
 
+// Вкладки
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.getElementById('richPanel').style.display = name === 'rich' ? '' : 'none';
+  document.getElementById('faqPanel').style.display = name === 'faq' ? '' : 'none';
+  localStorage.setItem('activeTab', name);
+}
+
 // Ініціалізація
 buildImgCols();
 renderHistory();
+switchTab(localStorage.getItem('activeTab') || 'rich');

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Горгани — Rich Content Builder</title>
+  <title>Горгани — Content Builder</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
@@ -21,15 +21,19 @@
           <path d="M8 1L2 5v8h4v-4h4v4h4V5L8 1z" />
         </svg>
       </div>
-      Rich Content Builder
+      Content Builder
       <span class="header-sub"> — Горгани</span>
     </div>
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="rich" onclick="switchTab('rich')">Річ-контент</button>
+      <button class="tab-btn" data-tab="faq" onclick="switchTab('faq')">FAQ</button>
+    </nav>
     <div class="spacer"></div>
     <span class="header-badge">Gorgany CMS</span>
   </header>
 
   <div class="container">
-    <div class="builder">
+    <div class="builder" id="richPanel">
 
       <!-- SECTION 1 -->
       <div class="section-card" id="sec1">
@@ -72,7 +76,7 @@
           <div class="tip"><b>Формат:</b> 1200px х 500px · <b>URL</b> генерується з папки і назви секції 1 з суфіксом <b>_long</b> · градієнту немає</div>
           <div class="field">
             <label>Alt-текст <span class="req">*</span></label>
-            <input type="text" id="s2alt" placeholder="Опис зображення для SEO">
+            <input type="text" id="s2alt" value="Fourth photo" placeholder="Опис зображення для SEO">
           </div>
         </div>
       </div>
@@ -218,13 +222,108 @@
       </div>
 
     </div>
+
+    <!-- FAQ -->
+    <div class="builder" id="faqPanel" style="display:none">
+
+      <!-- FAQ PAGE -->
+      <div class="section-card" id="fsec1">
+        <div class="section-head" onclick="toggleSection('fsec1')">
+          <div class="section-num">1</div>
+          <span class="section-name">Сторінка</span>
+          <span class="section-desc">назва та ідентифікатори блоків</span>
+          <span class="section-chevron">›</span>
+        </div>
+        <div class="section-body">
+          <div class="tip"><b>Правило:</b> два CMS-блоки з однаковою назвою — закінчення <b>-faq-html</b> і <b>-faq-json</b> · транслітерація автоматична · створюються в Content → Elements → Blocks</div>
+          <div class="field">
+            <label>Назва категорії / бренду / сторінки <span class="req">*</span></label>
+            <input type="text" id="faqName" placeholder="напр., жіночі куртки або boots" oninput="faqNameInput()">
+          </div>
+          <div class="id-chips">
+            <div class="id-chip">
+              <code id="faqIdHtml">…-faq-html</code>
+              <button class="copy-btn copy-btn-sm" id="faqIdHtmlBtn" onclick="copyFaqId('html')">Копіювати</button>
+            </div>
+            <div class="id-chip">
+              <code id="faqIdJson">…-faq-json</code>
+              <button class="copy-btn copy-btn-sm" id="faqIdJsonBtn" onclick="copyFaqId('json')">Копіювати</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ QUESTIONS -->
+      <div class="section-card" id="fsec2">
+        <div class="section-head" onclick="toggleSection('fsec2')">
+          <div class="section-num">2</div>
+          <span class="section-name">Питання та відповіді</span>
+          <span class="section-desc" id="faqCountDesc">0 питань у коді</span>
+          <span class="section-chevron">›</span>
+        </div>
+        <div class="section-body">
+          <div class="tip"><b>Тексти</b> в HTML і JSON-LD генеруються з одних полів — збіг «до символу» гарантований · новий рядок у відповіді = окремий абзац &lt;p&gt;</div>
+          <div class="faq-actions">
+            <button class="copy-btn" onclick="toggleFaqImport()">Імпорт списком</button>
+            <button class="gen-btn gen-btn-sm" onclick="faqAdd()">+ Додати питання</button>
+          </div>
+          <div class="import-panel" id="faqImportPanel" style="display:none">
+            <div class="import-hint">Перший рядок — питання, наступні — відповідь. Пари розділяй порожнім рядком.</div>
+            <textarea id="faqImportText" rows="6" placeholder="Як обрати рюкзак?&#10;Оберіть рюкзак залежно від тривалості походу...&#10;&#10;Який обʼєм потрібен?&#10;Для одноденних походів достатньо 20–30 літрів."></textarea>
+            <div class="faq-actions">
+              <button class="gen-btn gen-btn-sm" onclick="faqImport('append')">Додати до списку</button>
+              <button class="copy-btn" onclick="faqImport('replace')">Замінити список</button>
+            </div>
+          </div>
+          <div id="faqList"></div>
+        </div>
+      </div>
+
+      <!-- FAQ HISTORY -->
+      <div class="history-section" id="faqHistorySection" style="display:none">
+        <div class="history-head">
+          <span class="history-title">Останні генерації</span>
+          <button class="copy-btn" onclick="clearFaqHistory()">Очистити</button>
+        </div>
+        <div id="faqHistoryList"></div>
+      </div>
+
+      <!-- FAQ OUTPUT -->
+      <div class="output-section" id="faqOutputSection">
+        <div class="output-head" onclick="toggleFaqOutput()">
+          <span class="output-title">Готові блоки</span>
+          <div class="spacer"></div>
+          <span class="status-msg" id="faqStatusMsg"></span>
+          <button class="gen-btn" onclick="event.stopPropagation(); faqGenerate()">Згенерувати →</button>
+          <span class="output-chevron">›</span>
+        </div>
+        <div class="faq-outputs">
+          <div class="faq-output-block">
+            <div class="faq-output-label">
+              <code class="faq-output-id" id="faqOutIdHtml">…-faq-html</code>
+              <button class="copy-btn copy-btn-sm" id="faqCopyHtmlBtn" onclick="copyFaqCode('html')">Копіювати</button>
+            </div>
+            <pre class="output-pre output-empty" id="faqOutputHtml">Заповни поля і натисни «Згенерувати →»</pre>
+          </div>
+          <div class="faq-output-block">
+            <div class="faq-output-label">
+              <code class="faq-output-id" id="faqOutIdJson">…-faq-json</code>
+              <button class="copy-btn copy-btn-sm" id="faqCopyJsonBtn" onclick="copyFaqCode('json')">Копіювати</button>
+            </div>
+            <pre class="output-pre output-empty" id="faqOutputJson">HTML-блок і JSON-LD зʼявляться разом</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <footer>
-    Rich Content Builder · Горгани · Використовуй для генерації розмітки товарів
+    Content Builder · Горгани · Річ-контент і FAQ-блоки для Magento CMS
   </footer>
 
   <script src="script.js"></script>
+  <script src="faq.js"></script>
 </body>
 
 </html>
