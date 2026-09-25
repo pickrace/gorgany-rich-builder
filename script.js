@@ -127,7 +127,7 @@ function generate() {
   for (let i = 1; i <= 3; i++) {
     const suffix = posSuffixes[i - 1] + (isGradient ? '_gradient' : '');
     const imgUrl = (sharedFolder && sharedName)
-      ? `https://www.gorgany.com/media/wysiwyg/all_rich/eleven_pack/${sharedFolder}/${sharedName}${suffix}.jpg?format=webp`
+      ? `https://www.gorgany.com/media/wysiwyg/all_rich/twelve_pack/${sharedFolder}/${sharedName}${suffix}.jpg?format=webp`
       : '';
     s1 += `    <div class="col">\n`;
     s1 += `        <img src="${imgUrl}" alt="${esc(g(`i${i}alt`))}">\n`;
@@ -141,7 +141,7 @@ function generate() {
 
   // Section 2 — одне зображення
   const s2imgUrl = (sharedFolder && sharedName)
-    ? `https://www.gorgany.com/media/wysiwyg/all_rich/eleven_pack/${sharedFolder}/${sharedName}_long.jpg?format=webp`
+    ? `https://www.gorgany.com/media/wysiwyg/all_rich/twelve_pack/${sharedFolder}/${sharedName}_long.jpg?format=webp`
     : '';
   const s2 =
     `<div class="rich-content-one-image">\n` +
